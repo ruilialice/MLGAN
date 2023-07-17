@@ -144,7 +144,7 @@ if __name__ == '__main__':
     meta_interval = 1
 
     model_file = eval('Get_embd')
-    disease_list = ['ipf', 'rks', 'hes', 'mas']   # name of the sample data set, you can place you own data set by following the same setting
+    disease_list = ['toy']   # name of the sample data set, you can place you own data set by following the same setting
     print('dataset: {}'.format(disease_list[0]))
     model_choice = 'transformer'  # name of the proposed HiTANet in our paper
     model_save_file = model_choice + '_' + disease_list[0]
