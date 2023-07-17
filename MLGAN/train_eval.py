@@ -1,5 +1,6 @@
 import os
 import pickle
+import torch
 import time
 import random
 import shutil
@@ -14,7 +15,6 @@ from baselines.meta_model import MLP, convert_meta_data, train_embd_dis_meta, up
 def train_model(training_file='training_file',
                 validation_file='validation_file',
                 testing_file='testing_file',
-                testing_pair_file='testing_pair_file',
                 n_diagnosis_codes=10000,
                 n_labels=2,
                 output_file='output_file',
@@ -144,7 +144,7 @@ if __name__ == '__main__':
     meta_interval = 1
 
     model_file = eval('Get_embd')
-    disease_list = ['rks']   # name of the sample data set, you can place you own data set by following the same setting
+    disease_list = ['ipf', 'rks', 'hes', 'mas']   # name of the sample data set, you can place you own data set by following the same setting
     print('dataset: {}'.format(disease_list[0]))
     model_choice = 'transformer'  # name of the proposed HiTANet in our paper
     model_save_file = model_choice + '_' + disease_list[0]
@@ -161,13 +161,12 @@ if __name__ == '__main__':
             model_name = 'tran_%s_%s_L%d_wt_1e-4_focal%.2f' % (model_choice, disease, layer, gamma)
             print(model_name)
             log_file = 'results/' + model_name + '.txt'
-            path = '../../dataset/' + disease + '_dataset/'
-            trianing_file = path + disease + '.train_noise_20'
-            validation_file = path + disease + '.valid'
-            testing_file = path + disease + '.test'
-            testing_pair_file = path + disease + '.test_pair'
+            path = '../dataset/' + disease + '_dataset/'
+            trianing_file = path + disease + '.train_sample'
+            validation_file = path + disease + '.valid_sample'
+            testing_file = path + disease + '.test_sample'
 
-            dict_file = path + disease + '.record_code_dict'
+            dict_file = path + disease + '.record_code_dict_sample'
             code2id = pickle.load(open(dict_file, 'rb'))
             n_diagnosis_codes = len(pickle.load(open(dict_file, 'rb'))) + 1
 
@@ -191,7 +190,7 @@ if __name__ == '__main__':
                 random.seed(seed)  # random and transforms
 
                 roc_auc, avg_precision, accuary, precision, f1, recall\
-                    = train_model(trianing_file, validation_file, testing_file, testing_pair_file,
+                    = train_model(trianing_file, validation_file, testing_file,
                                 n_diagnosis_codes, n_labels, output_file_path, batch_size, dropout_rate,
                                 L2_reg, pretrain_epoch, n_epoch_g, n_epoch_together,
                                 log_eps, visit_size, hidden_size,
